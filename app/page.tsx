@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, Calendar, User, CalendarCheck } from "lucide-react";
+import { Plus, Users, Calendar, User, CalendarCheck, Trash2 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -201,6 +201,14 @@ export default function MeetFlow() {
     setOpen(false);
   }
 
+  function deleteMember(id: string) {
+    setMembers((prev) => prev.filter((m) => m.id !== id));
+    if (viewId === id) {
+      const remaining = others.filter((m) => m.id !== id);
+      setViewId(remaining[0]?.id ?? "");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* ── Header ── */}
@@ -289,10 +297,19 @@ export default function MeetFlow() {
                         {m.availability.length} 個空閒時段
                       </p>
                     </div>
-                    {m.id === "me" && (
+                    {m.id === "me" ? (
                       <Badge variant="outline" className="text-xs shrink-0">
                         你
                       </Badge>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive"
+                        onClick={() => deleteMember(m.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     )}
                   </CardContent>
                 </Card>
